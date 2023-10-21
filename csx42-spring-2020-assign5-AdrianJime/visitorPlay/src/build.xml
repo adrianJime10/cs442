@@ -1,0 +1,66 @@
+<project name="visitorPlay" default="compile_all" basedir="..">
+
+  <property name="BUILD.compiler"       value="modern"/>
+  <property name="src"                  value="src"/>
+  <property name="BUILD"                value="src/BUILD"/>
+  <property name="classes"              value="${BUILD}/classes"/>
+
+  <target name="all" depends="compile_all"/>
+
+  <target name="compile_all"
+          depends="visitorPlay"/>
+
+  <target name="clean">
+       <delete dir="${BUILD}"/>
+  </target>
+
+  <!-- Prepare target directories -->
+  <target name="prepare">
+        <mkdir dir="${BUILD}"/>
+        <mkdir dir="${classes}"/>
+  </target>
+
+ <target name="jar">
+        <mkdir dir="${BUILD}/jar"/>
+        <jar destfile="${BUILD}/jar/visitorPlay.jar" basedir="${BUILD}/classes">
+            <manifest>
+                <attribute name="Main-Class" value="visitorPlay.driver.Driver"/>
+            </manifest>
+        </jar>
+    </target>
+
+  <!-- ** means all subdirectories as well -->
+  <!-- * means all files in the current directory -->
+  <!-- for just java files use *.java -->
+
+  <target name="visitorPlay" depends="prepare">
+    <javac includeantruntime="false" srcdir="${src}"
+	           includes="visitorPlay/**"
+           excludes="**/package.html"
+           destdir="${classes}"
+           classpath="${classes}"
+           debug="on"
+           optimize="on"
+           deprecation="off"/>
+  </target>
+
+<target name="visitor-driver-jar">
+        <mkdir dir="${BUILD}/jar"/>
+        <jar destfile="${BUILD}/jar/Driver.jar" basedir="${BUILD}/classes">
+            <manifest>
+                <attribute name="Main-Class" value="visitorPlay.Driver.Driver"/>
+            </manifest>
+        </jar>
+    </target>
+
+<target name="run-visitor-driver" depends="visitor-driver-jar">
+    <java jar="${BUILD}/jar/Driver.jar"  fork="true">
+	<arg value="${inputFile}"/>
+	<arg value="${acceptableWordsFile}"/>
+	<arg value="${k}"/>
+	<arg value="${topKOutputFile}"/>
+	<arg value="${spellCheckOutputFile}"/> 
+    </java>	
+</target>
+
+</project>
